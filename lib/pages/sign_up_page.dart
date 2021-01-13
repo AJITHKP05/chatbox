@@ -1,4 +1,5 @@
 import 'package:chatchat/service/auth.dart';
+import 'package:chatchat/service/database.dart';
 import 'package:chatchat/widgets/textInputField.dart';
 import 'package:flutter/material.dart';
 import '../widgets/size_cofig.dart';
@@ -13,12 +14,13 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final unameCont = TextEditingController();
-  final passCont = TextEditingController();
-  final emailCont = TextEditingController();
+  final unameCont = TextEditingController(text: "ajith kp");
+  final passCont = TextEditingController(text: "ajithkp1234");
+  final emailCont = TextEditingController(text: "ajithkp1537@gmail.com");
   final formkey = GlobalKey<FormState>();
   bool isLoading = false;
   final AuthMethods _authMethods = new AuthMethods();
+  final DataBaseMethod _dataBaseMethod = new DataBaseMethod();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +71,13 @@ class _SignUpPageState extends State<SignUpPage> {
               context.columnSpacer,
               RaisedButton(
                 onPressed: () {
-                  if (formkey.currentState.validate())
+                  if (formkey.currentState.validate()) {
+                    Map<String, String> userMap = {
+                      "name": unameCont.text,
+                      "email": emailCont.text
+                    };
+
+                    _dataBaseMethod.uploadUser(userMap);
                     setState(() {
                       isLoading = true;
                       _authMethods.signUp(emailCont.text, passCont.text).then(
@@ -78,6 +86,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               MaterialPageRoute(
                                   builder: (context) => ChatHome())));
                     });
+                  }
                 },
                 child: isLoading
                     ? Center(child: CircularProgressIndicator())

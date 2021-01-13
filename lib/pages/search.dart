@@ -1,4 +1,5 @@
-import 'package:chatchat/widgets/textInputField.dart';
+import 'package:chatchat/service/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
@@ -7,6 +8,17 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  QuerySnapshot datas;
+  final _databaseMethods = DataBaseMethod();
+  @override
+  void initState() {
+    super.initState();
+    _databaseMethods.getAllUsers().then((value) {
+      datas = value;
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final searchCont = TextEditingController();
@@ -18,20 +30,38 @@ class _SearchPageState extends State<SearchPage> {
             ListTile(
               tileColor: Colors.grey[800],
               title: TextFormField(
+                style: TextStyle(color: Colors.white),
                 controller: searchCont,
                 decoration: InputDecoration(
-                    hintText: "Search username",
-                    hintStyle: TextStyle(color: Colors.white)),
+                  labelText: "Search username",
+                  labelStyle: TextStyle(color: Colors.blue),
+                ),
               ),
-              trailing: Icon(
-                Icons.search,
-                color: Colors.white,
+              trailing: InkWell(
+                onTap: () {
+                  _databaseMethods
+                      .getUserbyUserName(searchCont.text)
+                      .then((value) => datas = value);
+                  setState(() {});
+                },
+                child: Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ),
               ),
             ),
-            SearchTile(
-              name: "name",
-              email: "email",
-            )
+            datas != null
+                ? ListView.builder(
+                    itemCount: datas.docs.length,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, i) => SearchTile(
+                      email: datas.docs[i].data()["email"],
+                      name: datas.docs[i].data()["name"],
+                      // name: datas.docs[i].get("email"),
+                    ),
+                  )
+                : Container()
           ],
         ),
       ),
