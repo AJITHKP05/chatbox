@@ -1,11 +1,10 @@
-import 'package:chatchat/pages/chatHome.dart';
 import 'package:chatchat/service/authenticate.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
         buttonColor: Colors.orange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ChatHome(),
+      home: Authenticate(),
     );
   }
 }

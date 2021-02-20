@@ -1,4 +1,6 @@
+import 'package:chatchat/pages/chat_page.dart';
 import 'package:chatchat/service/database.dart';
+import 'package:chatchat/service/userData.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -70,19 +72,49 @@ class _SearchPageState extends State<SearchPage> {
 }
 
 class SearchTile extends StatelessWidget {
+  String chatRoomId;
   final String name;
   final String email;
 
-  const SearchTile({Key key, this.name, this.email}) : super(key: key);
+  SearchTile({Key key, this.name, this.email}) : super(key: key);
+  final _databaseMethods = DataBaseMethod();
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(name),
-      subtitle: Text(email),
-      trailing: RaisedButton(
-        onPressed: () {},
-        child: Text("Messge"),
-      ),
-    );
+    return name != UserData.username
+        ? ListTile(
+            title: Text(name),
+            subtitle: Text(email),
+            trailing: RaisedButton(
+              onPressed: () {
+                createChatRoom(name);
+
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                              chatRoomId: chatRoomId,
+                            )));
+              },
+              child: Text("Messge"),
+            ),
+          )
+        : Container();
+  }
+
+  createChatRoom(String username) {
+    List<String> users = [username, UserData.username];
+    chatRoomId = getChatRoomId(username, UserData.username);
+    Map<String, dynamic> chatroomMap = {
+      "users": users,
+      "chatRoomId": chatRoomId
+    };
+    _databaseMethods.createChatRoom(chatRoomId, chatroomMap);
+  }
+
+  getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return "$b\_$a";
+    } else
+      return "$a\_$b";
   }
 }

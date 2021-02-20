@@ -1,5 +1,6 @@
 import 'package:chatchat/service/auth.dart';
 import 'package:chatchat/service/database.dart';
+import 'package:chatchat/service/local_storage.dart';
 import 'package:chatchat/widgets/textInputField.dart';
 import 'package:flutter/material.dart';
 import '../widgets/size_cofig.dart';
@@ -76,15 +77,20 @@ class _SignUpPageState extends State<SignUpPage> {
                       "name": unameCont.text,
                       "email": emailCont.text
                     };
-
+                    LocalStorage.setUserName(unameCont.text);
+                    LocalStorage.setUserMail(emailCont.text);
                     _dataBaseMethod.uploadUser(userMap);
                     setState(() {
                       isLoading = true;
-                      _authMethods.signUp(emailCont.text, passCont.text).then(
-                          (value) => Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ChatHome())));
+                      _authMethods
+                          .signUp(emailCont.text, passCont.text)
+                          .then((value) {
+                        LocalStorage.setUserLoggedIn(true);
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChatHome()));
+                      });
                     });
                   }
                 },
