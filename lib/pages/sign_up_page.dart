@@ -15,9 +15,9 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final unameCont = TextEditingController(text: "ajith kp");
-  final passCont = TextEditingController(text: "ajithkp1234");
-  final emailCont = TextEditingController(text: "ajithkp1537@gmail.com");
+  final unameCont = TextEditingController();
+  final passCont = TextEditingController();
+  final emailCont = TextEditingController();
   final formkey = GlobalKey<FormState>();
   bool isLoading = false;
   final AuthMethods _authMethods = new AuthMethods();

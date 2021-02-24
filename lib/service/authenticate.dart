@@ -31,8 +31,9 @@ class _AuthenticateState extends State<Authenticate> {
             : SignUpPage(toggle: toggle);
   }
 
-  void checkForLogedIn() async {
-    alreadyIn = await LocalStorage.getUserLoggedIn();
+  Future<void> checkForLogedIn() async {
+    bool value = await LocalStorage.getUserLoggedIn();
+    if (value != null) alreadyIn = value;
     setState(() {});
   }
 }

@@ -71,6 +71,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 }
 
+// ignore: must_be_immutable
 class SearchTile extends StatelessWidget {
   String chatRoomId;
   final String name;
@@ -91,9 +92,8 @@ class SearchTile extends StatelessWidget {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ChatPage(
-                              chatRoomId: chatRoomId,
-                            )));
+                        builder: (context) =>
+                            ChatPage(chatRoomId: chatRoomId, name: name)));
               },
               child: Text("Messge"),
             ),
