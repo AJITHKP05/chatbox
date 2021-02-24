@@ -63,4 +63,9 @@ class DataBaseMethod {
       print(e);
     });
   }
+
+  Future<bool> isUsernameUsed(String username) async {
+    QuerySnapshot user = await getUserbyUserName(username);
+    return user.docs.isEmpty ? false : true;
+  }
 }

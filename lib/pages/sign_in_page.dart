@@ -1,11 +1,14 @@
 import 'package:chatchat/service/auth.dart';
 import 'package:chatchat/service/database.dart';
+import 'package:chatchat/service/firebase_error_manager.dart';
 import 'package:chatchat/service/local_storage.dart';
 import 'package:chatchat/widgets/textInputField.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../widgets/size_cofig.dart';
 import 'chatHome.dart';
+import '../utils/view_utils.dart';
 
 class SignInPage extends StatefulWidget {
   final Function toggle;
@@ -16,8 +19,8 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  final passCont = TextEditingController(text: "ajithkp1234");
-  final emailCont = TextEditingController(text: "ajithkp1537@gmail.com");
+  final passCont = TextEditingController();
+  final emailCont = TextEditingController();
   final formkey = GlobalKey<FormState>();
   bool isLoading = false;
   final AuthMethods _authMethods = new AuthMethods();
@@ -25,6 +28,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text("SignIn"),
         ),
@@ -69,24 +73,29 @@ class _SignInPageState extends State<SignInPage> {
                           .getUserbyUserEmail(emailCont.text)
                           .then((value) {
                         user = value;
-                        LocalStorage.setUserName(user.docs[0].data()["name"]);
-                        LocalStorage.setUserMail(emailCont.text);
-                      });
+                        if (user.docs.isNotEmpty) {
+                          LocalStorage.setUserName(user.docs[0].data()["name"]);
+                          LocalStorage.setUserMail(emailCont.text);
+                          setState(() {
+                            isLoading = true;
 
-                      setState(() {
-                        isLoading = true;
-                        _authMethods
-                            .signIn(emailCont.text, passCont.text)
-                            .then((value) {
-                          if (value != null) {
-                            LocalStorage.setUserLoggedIn(true);
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ChatHome()));
-                          }
-                        });
-                        isLoading = false;
+                            _authMethods
+                                .signIn(emailCont.text, passCont.text)
+                                .then((value) {
+                              if (value is User) {
+                                LocalStorage.setUserLoggedIn(true);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatHome()));
+                              } else
+                                context.showSnackBarError(AuthExceptionHandler
+                                    .generateExceptionMessage(value));
+                            });
+                            isLoading = false;
+                          });
+                        } else
+                          context.showSnackBarError("Invalid username");
                       });
                     }
                   },

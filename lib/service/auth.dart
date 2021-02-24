@@ -1,6 +1,8 @@
 import 'package:chatchat/model/person.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'firebase_error_manager.dart';
+
 class AuthMethods {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -9,9 +11,12 @@ class AuthMethods {
       UserCredential result = await auth.signInWithEmailAndPassword(
           email: email, password: password);
       User user = result.user;
-      return userFromFirebaseUser(user);
+      return user;
+      //  userFromFirebaseUser(user);
     } catch (e) {
       print(e.toString());
+
+      return AuthExceptionHandler.handleException(e);
     }
   }
 
@@ -20,9 +25,11 @@ class AuthMethods {
       UserCredential result = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
       User user = result.user;
-      return userFromFirebaseUser(user);
+      return user;
+      // return userFromFirebaseUser(user);
     } catch (e) {
       print(e.toString());
+      return AuthExceptionHandler.handleException(e);
     }
   }
 

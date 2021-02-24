@@ -1,10 +1,14 @@
 import 'package:chatchat/service/auth.dart';
 import 'package:chatchat/service/database.dart';
+import 'package:chatchat/service/firebase_error_manager.dart';
 import 'package:chatchat/service/local_storage.dart';
 import 'package:chatchat/widgets/textInputField.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../widgets/size_cofig.dart';
 import 'chatHome.dart';
+
+import '../utils/view_utils.dart';
 
 class SignUpPage extends StatefulWidget {
   final Function toggle;
@@ -71,26 +75,41 @@ class _SignUpPageState extends State<SignUpPage> {
               context.columnSpacer,
               context.columnSpacer,
               RaisedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (formkey.currentState.validate()) {
                     Map<String, String> userMap = {
                       "name": unameCont.text,
                       "email": emailCont.text
                     };
-                    LocalStorage.setUserName(unameCont.text);
-                    LocalStorage.setUserMail(emailCont.text);
-                    _dataBaseMethod.uploadUser(userMap);
-                    setState(() {
-                      isLoading = true;
-                      _authMethods
-                          .signUp(emailCont.text, passCont.text)
-                          .then((value) {
-                        LocalStorage.setUserLoggedIn(true);
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChatHome()));
-                      });
+                    await _dataBaseMethod
+                        .isUsernameUsed(unameCont.text)
+                        .then((value) {
+                      if (value)
+                        context.showSnackBarError("Username is already taken");
+                      else {
+                        LocalStorage.setUserName(unameCont.text);
+                        LocalStorage.setUserMail(emailCont.text);
+
+                        setState(() {
+                          isLoading = true;
+                          _authMethods
+                              .signUp(emailCont.text, passCont.text)
+                              .then((value) {
+                            if (value is User) {
+                              _dataBaseMethod.uploadUser(userMap);
+                              LocalStorage.setUserLoggedIn(true);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ChatHome()));
+                            } else
+                              context.showSnackBarError(
+                                  AuthExceptionHandler.generateExceptionMessage(
+                                      value));
+                          });
+                          isLoading = false;
+                        });
+                      }
                     });
                   }
                 },
