@@ -6,14 +6,14 @@ import 'package:chatchat/widgets/textInputField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../widgets/size_cofig.dart';
-import 'chatHome.dart';
+import 'chat_home.dart';
 
 import '../utils/view_utils.dart';
 
 class SignUpPage extends StatefulWidget {
   final Function toggle;
 
-  const SignUpPage({Key key, this.toggle}) : super(key: key);
+  const SignUpPage({Key? key, required this.toggle}) : super(key: key);
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
@@ -44,8 +44,8 @@ class _SignUpPageState extends State<SignUpPage> {
               CommonTextField(
                 controller: unameCont,
                 hint: "Username",
-                validate: (String value) {
-                  return (value.isEmpty || value.length < 5)
+                validate: (String? value) {
+                  return (value != null && value.isEmpty || value!.length < 5)
                       ? "Username mustbe 5 digit "
                       : null;
                 },
@@ -54,10 +54,10 @@ class _SignUpPageState extends State<SignUpPage> {
               CommonTextField(
                 controller: emailCont,
                 hint: "Email",
-                validate: (String value) {
-                  return (value.isEmpty ||
+                validate: (String? value) {
+                  return (value != null && value.isEmpty ||
                           !RegExp(r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-                              .hasMatch(value))
+                              .hasMatch(value!))
                       ? "Enter valid email "
                       : null;
                 },
@@ -66,8 +66,8 @@ class _SignUpPageState extends State<SignUpPage> {
               CommonTextField(
                 controller: passCont,
                 hint: "Password",
-                validate: (String value) {
-                  return (value.isEmpty || value.length < 5)
+                validate: (String? value) {
+                  return (value != null && value.isEmpty || value!.length < 5)
                       ? "Password mustbe 8 digit "
                       : null;
                 },
@@ -76,7 +76,7 @@ class _SignUpPageState extends State<SignUpPage> {
               context.columnSpacer,
               RaisedButton(
                 onPressed: () async {
-                  if (formkey.currentState.validate()) {
+                  if (formkey.currentState!.validate()) {
                     Map<String, String> userMap = {
                       "name": unameCont.text,
                       "email": emailCont.text

@@ -4,7 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 extension ViewUtils on BuildContext {
   void showSnackBarError(
     String message, {
-    VoidCallback onVisible,
+     VoidCallback? onVisible,
   }) {
     Fluttertoast.showToast(
       msg: message,
@@ -17,7 +17,7 @@ extension ViewUtils on BuildContext {
     );
   }
 
-  void showSnackBarSuccess(String message, [VoidCallback onVisible]) {
+  void showSnackBarSuccess(String message, [ VoidCallback? onVisible]) {
     Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_LONG,
@@ -29,7 +29,7 @@ extension ViewUtils on BuildContext {
     );
   }
 
-  void showSnackBarNormal(String message, [VoidCallback onVisible]) {
+  void showSnackBarNormal(String message, [VoidCallback? onVisible]) {
     Scaffold.of(this).showSnackBar(SnackBar(
       content: Text(message, textAlign: TextAlign.center),
       duration: Duration(seconds: 3),

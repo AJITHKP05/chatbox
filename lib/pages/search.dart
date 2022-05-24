@@ -1,6 +1,6 @@
 import 'package:chatchat/pages/chat_page.dart';
 import 'package:chatchat/service/database.dart';
-import 'package:chatchat/service/userData.dart';
+import 'package:chatchat/service/user_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +10,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  QuerySnapshot datas;
+  QuerySnapshot? datas;
   final _databaseMethods = DataBaseMethod();
   @override
   void initState() {
@@ -32,11 +32,11 @@ class _SearchPageState extends State<SearchPage> {
             ListTile(
               tileColor: Colors.grey[800],
               title: TextFormField(
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 controller: searchCont,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Search username",
-                  labelStyle: TextStyle(color: Colors.blue),
+                  labelStyle: const TextStyle(color: Colors.blue),
                 ),
               ),
               trailing: InkWell(
@@ -46,7 +46,7 @@ class _SearchPageState extends State<SearchPage> {
                       .then((value) => datas = value);
                   setState(() {});
                 },
-                child: Icon(
+                child: const Icon(
                   Icons.search,
                   color: Colors.white,
                 ),
@@ -54,12 +54,12 @@ class _SearchPageState extends State<SearchPage> {
             ),
             datas != null
                 ? ListView.builder(
-                    itemCount: datas.docs.length,
-                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: datas?.docs.length,
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, i) => SearchTile(
-                      email: datas.docs[i].data()["email"],
-                      name: datas.docs[i].data()["name"],
+                      email: datas!.docs[i].get ("email"),
+                      name: datas!.docs[i].get ("name"),
                       // name: datas.docs[i].get("email"),
                     ),
                   )
@@ -73,11 +73,11 @@ class _SearchPageState extends State<SearchPage> {
 
 // ignore: must_be_immutable
 class SearchTile extends StatelessWidget {
-  String chatRoomId;
+   String? chatRoomId;
   final String name;
   final String email;
 
-  SearchTile({Key key, this.name, this.email}) : super(key: key);
+  SearchTile({ Key? key, required this.name, required this.email,  this.chatRoomId}) : super(key: key);
   final _databaseMethods = DataBaseMethod();
   @override
   Widget build(BuildContext context) {
@@ -93,22 +93,22 @@ class SearchTile extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            ChatPage(chatRoomId: chatRoomId, name: name)));
+                            ChatPage(chatRoomId: chatRoomId??"", name: name)));
               },
-              child: Text("Messge"),
+              child: const Text("Messge"),
             ),
           )
         : Container();
   }
 
   createChatRoom(String username) {
-    List<String> users = [username, UserData.username];
-    chatRoomId = getChatRoomId(username, UserData.username);
+    List<String?> users = [username, UserData.username];
+    chatRoomId = getChatRoomId(username, UserData.username??"");
     Map<String, dynamic> chatroomMap = {
       "users": users,
       "chatRoomId": chatRoomId
     };
-    _databaseMethods.createChatRoom(chatRoomId, chatroomMap);
+    _databaseMethods.createChatRoom(chatRoomId??"", chatroomMap);
   }
 
   getChatRoomId(String a, String b) {

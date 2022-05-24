@@ -10,7 +10,7 @@ class AuthMethods {
     try {
       UserCredential result = await auth.signInWithEmailAndPassword(
           email: email, password: password);
-      User user = result.user;
+      User? user = result.user;
       return user;
       //  userFromFirebaseUser(user);
     } catch (e) {
@@ -24,7 +24,7 @@ class AuthMethods {
     try {
       UserCredential result = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      User user = result.user;
+      User? user = result.user;
       return user;
       // return userFromFirebaseUser(user);
     } catch (e) {
@@ -49,7 +49,7 @@ class AuthMethods {
     }
   }
 
-  Person userFromFirebaseUser(User user) {
+  Person? userFromFirebaseUser(User user) {
     return user != null ? Person(userId: user.uid) : null;
   }
 }

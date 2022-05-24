@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'userData.dart';
+import 'user_data.dart';
 
 class DataBaseMethod {
   Future getUserbyUserName(String name) async {

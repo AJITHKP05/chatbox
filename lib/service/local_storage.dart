@@ -3,15 +3,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LocalStorage {
   static final String userLoggedin = "isLogged";
 
-  static final String userName = "userName";
-  static final String userEmail = "userEmail";
+  static  String userName = "userName";
+  static  String userEmail = "userEmail";
 
   static Future<void> setUserLoggedIn(bool value) async {
     final shared = await SharedPreferences.getInstance();
     shared.setBool(userLoggedin, value);
   }
 
-  static Future<bool> getUserLoggedIn() async {
+  static Future<bool?> getUserLoggedIn() async {
     final shared = await SharedPreferences.getInstance();
     return shared.getBool(userLoggedin);
   }
@@ -21,7 +21,7 @@ class LocalStorage {
     shared.setString(userName, value);
   }
 
-  static Future<String> getUserName() async {
+  static Future<String?> getUserName() async {
     final shared = await SharedPreferences.getInstance();
     return shared.getString(userName);
   }
@@ -31,7 +31,7 @@ class LocalStorage {
     shared.setString(userEmail, value);
   }
 
-  static Future<String> getUserMail() async {
+  static Future<String?> getUserMail() async {
     final shared = await SharedPreferences.getInstance();
     return shared.getString(userEmail);
   }

@@ -7,15 +7,15 @@ class ChatPage extends StatefulWidget {
   final String chatRoomId;
   final String name;
 
-  const ChatPage({Key key, this.chatRoomId, this.name}) : super(key: key);
+  const ChatPage({Key? key, required this.chatRoomId, required this.name}) : super(key: key);
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
   final textCont = TextEditingController();
-  DataBaseMethod _database = DataBaseMethod();
-  Stream messageStream;
+  final DataBaseMethod _database = DataBaseMethod();
+  Stream<QuerySnapshot>? messageStream;
 
   getMessages() async {
     messageStream = await _database.getAllMessages(widget.chatRoomId);
@@ -26,7 +26,7 @@ class _ChatPageState extends State<ChatPage> {
     if (textCont.text.isNotEmpty) {
       Map<String, String> map = {
         "message": textCont.text,
-        "sendBy": await LocalStorage.getUserName(),
+        "sendBy": await LocalStorage.getUserName().toString(),
         "ts": DateTime.now().toString(),
         "read": "true"
       };
@@ -50,17 +50,17 @@ class _ChatPageState extends State<ChatPage> {
           fit: StackFit.expand,
           children: [
             Image.network(
-              "https://www.wallpapers13.com/wp-content/uploads/2016/04/Sunset-Boy-and-Girl-Silhouette-romantic-couple-love-Wallpaper-Hd-for-mobile-phones-915x515.jpg",
+              "https://images.unsplash.com/photo-1600360695828-ee110ac2950e?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=60&raw_url=true&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8bmF0dXJhbCUyMGJhY2tncm91bmR8ZW58MHx8MHx8&auto=format&fit=crop&w=500",
               fit: BoxFit.cover,
             ),
             Container(
               child: StreamBuilder<QuerySnapshot>(
                 stream: messageStream,
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasData)
-                    return new ListView.builder(
+                  if (snapshot.hasData) {
+                    return  ListView.builder(
                       reverse: true,
-                      itemCount: snapshot.data.docs.length + 1,
+                      itemCount: snapshot.data?.docs.length??0 + 1,
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           return SizedBox(
@@ -68,13 +68,14 @@ class _ChatPageState extends State<ChatPage> {
                           );
                         }
                         DocumentSnapshot document =
-                            snapshot.data.docs[index - 1];
+                            snapshot.data!.docs[index - 1];
 
                         return messageTile(
                             document.get('message'), document.get('sendBy'));
                       },
                     );
-                  return Center(
+                  }
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 },

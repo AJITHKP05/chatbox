@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+migrate_working_dir/
 
 # IntelliJ related
 *.iml
@@ -22,6 +23,7 @@
 
 # Flutter/Dart/Pub related
 **/doc/api/
+**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -33,19 +35,13 @@
 # Web related
 lib/generated_plugin_registrant.dart
 
-# Exceptions to above rules.
-!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-android/key.properties
-android/.project
-android/app/.settings/org.eclipse.buildship.core.prefs
-android/app/.project
-android/app/.classpath
-android/app/google-services.json
-android/.settings/org.eclipse.buildship.core.prefs
+# Symbolication related
+app.*.symbols
 
-# App config - contains url and keys
-/config
+# Obfuscation related
+app.*.map.json
 
-# IOS
-ios/Runner/GoogleService-Info.plist
-ios/Flutter/.last_build_id
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release

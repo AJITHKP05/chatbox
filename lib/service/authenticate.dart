@@ -1,4 +1,4 @@
-import 'package:chatchat/pages/chatHome.dart';
+import 'package:chatchat/pages/chat_home.dart';
 import 'package:chatchat/pages/sign_in_page.dart';
 import 'package:chatchat/pages/sign_up_page.dart';
 import 'package:chatchat/service/local_storage.dart';
@@ -32,7 +32,7 @@ class _AuthenticateState extends State<Authenticate> {
   }
 
   Future<void> checkForLogedIn() async {
-    bool value = await LocalStorage.getUserLoggedIn();
+    bool? value = await LocalStorage.getUserLoggedIn();
     if (value != null) alreadyIn = value;
     setState(() {});
   }

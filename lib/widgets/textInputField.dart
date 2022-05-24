@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CommonTextField extends StatelessWidget {
-  final String hint;
+  final String? hint;
   final TextEditingController controller;
-  final Function(String) validate;
+  final String? Function(String?)? validate;
 
-  CommonTextField({Key key, this.hint, this.controller, this.validate})
+  const CommonTextField({Key? key, this.hint, required this.controller,  
+  this.validate})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class CommonTextField extends StatelessWidget {
       validator: validate,
       decoration: InputDecoration(
           hintText: hint,
-          focusedBorder: UnderlineInputBorder(
+          focusedBorder: const UnderlineInputBorder(
               borderSide: BorderSide(color: Colors.amber))),
     );
   }

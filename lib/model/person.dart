@@ -1,6 +1,6 @@
 class Person {
   String userId;
   Person({
-    this.userId,
+    required this.userId,
   });
 }
